@@ -18,18 +18,13 @@ jobs:
           rust-version: ${{ matrix.rust }}
           components: rustfmt,clippy
       - uses: actions/checkout@v1
-      - name: "Get cargo bin directory"
-        id: cargo-bin-dir
-        run: echo "::set-output name=dir::$HOME/.cargo/bin"
-      - name: "Cache cargo make"
-        id: cache-cargo-make
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.cargo-bin-dir.outputs.dir }}/cargo-make
-          key: ${{ runner.os }}-${{ matrix.rust }}-cargo-make-${{ env.CI_CARGO_MAKE_VERSION }}
-      - name: "Install cargo-make"
-        if: steps.cache-cargo-make.outputs.cache-hit != 'true'
-        run: cargo install cargo-make --version ${{ env.CI_CARGO_MAKE_VERSION }}
+      - name: Install cargo-make
+        run: |
+          curl -LO "https://github.com/sagiegurari/cargo-make/releases/download/${CI_CARGO_MAKE_VERSION}/cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl.zip"
+          unzip "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl.zip"
+          cp "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl/cargo-make" ~/.cargo/bin/
+          rm -r "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl.zip" "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl"
+          cargo make --version
       - name: "Format / Build / Test"
         run: cargo make ci
         env:
@@ -47,18 +42,14 @@ jobs:
           rust-version: ${{ matrix.rust }}
           components: rustfmt,clippy
       - uses: actions/checkout@v1
-      - name: "Get cargo bin directory"
-        id: cargo-bin-dir
-        run: echo "::set-output name=dir::$HOME\.cargo\bin"
-      - name: "Cache cargo make"
-        id: cache-cargo-make
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.cargo-bin-dir.outputs.dir }}\cargo-make.exe
-          key: ${{ runner.os }}-${{ matrix.rust }}-cargo-make-${{ env.CI_CARGO_MAKE_VERSION }}
-      - name: "Install cargo-make"
-        if: steps.cache-cargo-make.outputs.cache-hit != 'true'
-        run: cargo install cargo-make --version ${{ env.CI_CARGO_MAKE_VERSION }}
+      - name: Install cargo-make
+        run: |
+          curl -LO "https://github.com/sagiegurari/cargo-make/releases/download/${CI_CARGO_MAKE_VERSION}/cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip"
+          unzip "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip"
+          cp "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip/cargo-make.exe" ~/.cargo/bin/
+          rm -r "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip" "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc"
+          cargo make --version
+        shell: bash
       - name: "Format / Build / Test"
         run: cargo make ci
         env:
