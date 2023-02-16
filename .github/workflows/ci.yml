@@ -19,12 +19,15 @@ jobs:
           components: rustfmt,clippy
       - uses: actions/checkout@v1
       - name: Install cargo-make
-        run: |
-          curl -LO "https://github.com/sagiegurari/cargo-make/releases/download/${CI_CARGO_MAKE_VERSION}/cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl.zip"
-          unzip "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl.zip"
-          cp "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl/cargo-make" ~/.cargo/bin/
-          rm -r "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl.zip" "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-unknown-linux-musl"
-          cargo make --version
+        uses: jaxxstorm/action-install-gh-release@v1.9.0
+        with:
+          repo: sagiegurari/cargo-make
+          tag: ${{ env.CI_CARGO_MAKE_VERSION }}
+      # - name: Add cargo-make to $PATH
+      #   run: |
+      #     ${RUNNER_TOOL_CACHE}/sagiegurari/cargo-make/${CI_CARGO_MAKE_VERSION}/${RUNNER_OS}-${RUNNER_ARCH}/
+      - run: env
+      - run: tree /opt/hostedtoolcache/sagiegurari/cargo-make/0.35.16/linux-x64
       - name: "Format / Build / Test"
         run: cargo make ci
         env:
@@ -43,13 +46,10 @@ jobs:
           components: rustfmt,clippy
       - uses: actions/checkout@v1
       - name: Install cargo-make
-        run: |
-          curl -LO "https://github.com/sagiegurari/cargo-make/releases/download/${CI_CARGO_MAKE_VERSION}/cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip"
-          unzip "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip"
-          cp "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip/cargo-make.exe" ~/.cargo/bin/
-          rm -r "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc.zip" "cargo-make-v${CI_CARGO_MAKE_VERSION}-x86_64-pc-windows-msvc"
-          cargo make --version
-        shell: bash
+        uses: jaxxstorm/action-install-gh-release@v1.9.0
+        with:
+          repo: sagiegurari/cargo-make
+          tag: ${{ env.CI_CARGO_MAKE_VERSION }}
       - name: "Format / Build / Test"
         run: cargo make ci
         env:
