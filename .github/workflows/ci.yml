@@ -17,6 +17,7 @@ jobs:
         with:
           rust-version: ${{ matrix.rust }}
           components: rustfmt,clippy
+      - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v1
       - name: "Cache cargo make"
         id: cache-cargo-make
@@ -43,6 +44,7 @@ jobs:
         with:
           rust-version: ${{ matrix.rust }}
           components: rustfmt,clippy
+      - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v1
       - name: "Cache cargo make"
         id: cache-cargo-make
